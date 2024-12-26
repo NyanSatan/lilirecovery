@@ -6,4 +6,4 @@ My little fork of [libirecovery](https://github.com/libimobiledevice/libirecover
 
 ## Credits
 
-* People behind **libimobiledevice** project - for orginal libirecovery
+* People behind **libimobiledevice** project - for original libirecovery
