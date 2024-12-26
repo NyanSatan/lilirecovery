@@ -1114,11 +1114,25 @@ static irecv_error_t iokit_usb_open_service(irecv_client_t *pclient, io_service_
         return IRECV_E_UNKNOWN_ERROR;
     }
 
+    static const CFStringRef serialNumberVariants[] = {
+        CFSTR(kUSBSerialNumberString),
+        /* this is required on older iOS versions, such as 6.1.4 */
+        CFSTR("USB Serial Number"),
+        NULL
+    };
+
+    for (int c = 0; serialNumberVariants[c]; c++) {
+        serialString = IORegistryEntryCreateCFProperty(service, serialNumberVariants[c], kCFAllocatorDefault, 0);
+        if (serialString) {
+            break;
+        }
+    }
+
     // Cache the serial string before discarding the service. The service object
     // has a cached copy, so a request to the hardware device is not required.
     char serial_str[256];
     serial_str[0] = '\0';
-    serialString = IORegistryEntryCreateCFProperty(service, CFSTR(kUSBSerialNumberString), kCFAllocatorDefault, 0);
+
     if (serialString) {
         CFStringGetCString(serialString, serial_str, sizeof(serial_str), kCFStringEncodingUTF8);
         CFRelease(serialString);
